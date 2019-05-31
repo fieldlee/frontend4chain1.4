@@ -1,0 +1,131 @@
+http://127.0.01:8000/login
+{
+  "_id": "c7f9a46fe9bbd58091881fb389000bb9",
+  "_rev": "2-25ec8b9bb47d76206999822f21414116",
+  "username": "fieldlee",
+  "password": "5f4dcc3b5aa765d61d8327deb882cf99",
+  "active": true
+}
+
+
+http://127.0.0.1:8000/fabric/saveproject
+
+{
+  "domain":"51mm.com",
+  "consensus":"raft",
+  "orders":[
+  		{
+  		"orderIp":"192.168.1.100"
+  		},
+  		{
+  		"orderIp":"192.168.1.100"
+  		},
+  		{
+  		"orderIp":"192.168.1.100"
+  		},
+  		{
+  		"orderIp":"192.168.1.100"
+  		}
+  	],
+  "orgs":[
+  		{
+  			"orgId":"mmOrg",
+  			"peers":[
+  				{
+  					"peerIp":"192.168.1.100"
+  				},
+  				{
+  					"peerIp":"192.168.1.100"
+  				}
+  			]
+  		},
+  		{
+  			"orgId":"btcOrg",
+  			"peers":[
+  				{
+  					"peerIp":"192.168.1.100"
+  				},
+  				{
+  					"peerIp":"192.168.1.100"
+  				}
+  			]
+  		}
+  	]
+}
+
+
+
+
+http://127.0.0.1:8000/fabric/resaveproject
+
+
+
+{
+  "id":"9d17738fc37f44d3b739624e501f97b2",
+  "domain":"51mm.com",
+  "consensus":"raft",
+  "orders":[
+  		{
+  		"orderIp":"192.168.1.100"
+  		},
+  		{
+  		"orderIp":"192.168.1.100"
+  		},
+  		{
+  		"orderIp":"192.168.1.100"
+  		},
+  		{
+  		"orderIp":"192.168.1.100"
+  		}
+  	],
+  "orgs":[
+  		{
+  			"orgId":"mmOrg",
+  			"peers":[
+  				{
+  					"peerIp":"192.168.1.100"
+  				},
+  				{
+  					"peerIp":"192.168.1.100"
+  				}
+  			]
+  		},
+  		{
+  			"orgId":"btcOrg",
+  			"peers":[
+  				{
+  					"peerIp":"192.168.1.100"
+  				},
+  				{
+  					"peerIp":"192.168.1.100"
+  				}
+  			]
+  		}
+  	]
+}
+
+http://127.0.0.1:8000/fabric/deployenv
+
+{
+  "id":"9d17738fc37f44d3b739624e501f97b2"
+}
+
+
+http://127.0.0.1:8000/fabric/generatechan
+
+{
+  "id":"ae5cc2ea1fe545b4a9e185c0112be03f",
+  "channelId":"mmchannel",
+  "includeOrgs":["mmOrg","btcOrg"]
+}
+
+http://127.0.0.1:8000/fabric/installchaincode
+
+{
+  "pid":"ae5cc2ea1fe545b4a9e185c0112be03f",
+  "channelId":"mmchannel",
+  "ccGitUrl":"https://github.com/fieldlee/ledger.git",
+  "ccVersion":"v3.5",
+  "ccName":"ledger"
+}
+
