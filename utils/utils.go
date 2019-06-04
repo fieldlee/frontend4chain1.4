@@ -5,9 +5,9 @@ import (
 	"crypto/md5"
 	"errors"
 	"fmt"
-	"frontend4chain/constant"
-	"frontend4chain/db"
-	"frontend4chain/module"
+	"frontend4chain1.4/constant"
+	"frontend4chain1.4/db"
+	"frontend4chain1.4/module"
 	"log"
 	"math/rand"
 	"os"
@@ -282,7 +282,7 @@ func Fill(info module.Define) module.Define {
 	// 获得所有的ip
 	orderIps := make([]string, 0)
 	for _, order := range info.Orders {
-		// 默认第一个order 为kafkaip
+		// 默认第一个order 为kafkaip    7050
 		if i == 0 {
 			info.KafkaIp = order.OrderIp
 			info.Orders[i].OrderPort = 7050
@@ -326,7 +326,7 @@ func Fill(info module.Define) module.Define {
 			info.Orgs[i].Peers[j].CouchId = fmt.Sprint("couch", "_", org.OrgId, "_", fmt.Sprint("peer", j))
 			info.Orgs[i].Peers[j].CouchUsername = constant.COUCHUSERNAME
 			info.Orgs[i].Peers[j].CouchPassword = constant.COUCHPASSWORD
-			info.Orgs[i].Peers[j].CouchPort = 4984 + 1000*replaceNum //不同的端口 根据ip 重复的次数
+			info.Orgs[i].Peers[j].CouchPort = 5984 + 1000*replaceNum //不同的端口 根据ip 重复的次数
 			info.Orgs[i].Peers[j].CouchContainerId = fmt.Sprint("couch.", fmt.Sprint("peer", j), ".", org.OrgId, ".", info.Domain)
 			if j == 0 {
 				info.Orgs[i].AnchorIp = peer.PeerIp

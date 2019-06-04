@@ -7,7 +7,7 @@ package config
 import (
 	"encoding/json"
 	"fmt"
-	"frontend4chain/constant"
+	"frontend4chain1.4/constant"
 	"io/ioutil"
 	"log"
 )

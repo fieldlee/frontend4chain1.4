@@ -80,9 +80,9 @@ type Config struct {
 	OrderId         string                   `json:"orderId"`
 	Consensus       string                   `json:"consensus"`
 	Manager         bool                     `json:"manager"`
-	Orderers        []string                 `json:"orderers"`
-	Orgs            []string                 `json:"orgs"`
-	Channels        []map[string]interface{} `json:"channels"`
+	Connect         map[string]interface{}   `json:"connect_profile"`
+
+
 	ExpireTime      string                   `json:"jwt_expiretime"`
 	ProjectName     string                   `json:"projectName"`
 	CcSrcPath       string                   `json:"CC_SRC_PATH"`

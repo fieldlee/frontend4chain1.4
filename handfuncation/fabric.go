@@ -4,10 +4,10 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"frontend4chain/constant"
-	"frontend4chain/db"
-	"frontend4chain/module"
-	"frontend4chain/utils"
+	"frontend4chain1.4/constant"
+	"frontend4chain1.4/db"
+	"frontend4chain1.4/module"
+	"frontend4chain1.4/utils"
 	"io"
 	"io/ioutil"
 	"log"
@@ -58,7 +58,7 @@ func HandlerFabircAll(writer http.ResponseWriter, request *http.Request) {
 		uploadChaincode(writer, request) //chaincode handle
 		return
 	case "/fabric/addorg":
-		addOrg(writer, request)
+		// addOrg(writer, request)
 		return
 	case "/fabric/setexplorer":
 		setExplorer(writer, request) //设置用户名和密码
@@ -752,6 +752,7 @@ func setExplorer(writer http.ResponseWriter, request *http.Request) {
 	return
 }
 
+/****
 func addOrg(writer http.ResponseWriter, request *http.Request) {
 	defer request.Body.Close()
 
@@ -1164,7 +1165,9 @@ func addOrg(writer http.ResponseWriter, request *http.Request) {
 	}
 
 	networkconfig := make(map[string]interface{})
-	if project.Consensus == "kafka" {
+	fmt.Println("project.Consensus:")
+	fmt.Println(project.Consensus)
+	if project.Consensus == "kafka" || project.Consensus == "raft" {
 		for _, order := range project.Orders {
 			tmpOrder := make(map[string]string)
 			tmpOrder["url"] = fmt.Sprint("grpcs://", order.OrderIp, ":", strconv.Itoa(order.OrderPort))
@@ -1329,6 +1332,8 @@ func addOrg(writer http.ResponseWriter, request *http.Request) {
 	utils.ResponseJson(200, "新增组织完成，请确认", "", writer)
 	return
 }
+***/
+
 
 // 获得define 传参处理
 func defineHandle(writer http.ResponseWriter, request *http.Request, status string) {
@@ -1557,69 +1562,187 @@ func channelgenHandle(writer http.ResponseWriter, request *http.Request) {
 	config.KeyValueStore = "/var/fabric-client-kvs"
 	config.Consensus = defindeInfo.Consensus
 	// config channels
+	connectProfile := make(map[string]interface{})
+
+	connectProfile["version"] = "1.0"
+	//Orderers        map[string]interface{} `json:"orderers"`
+	//Orgs            map[string]interface{} `json:"organizations"`
+	//Channels        map[string]interface{} `json:"channels"`
+	//Peers           map[string]interface{} `json:"peers"`
+	//Certs 			map[string]interface{} `json:"certificateAuthorities"`
+	channelInfo := make(map[string]interface{})
 	for _, channel := range defindeInfo.AddChannels {
-		channelMap := make(map[string]interface{})
-		channelMap["channelId"] = channel.ChannelId
-		channelMap["includes"] = channel.IncludeOrgs
-		channelMap["channelConfigPath"] = fmt.Sprint(constant.ROOTPATH, "/", defindeInfo.ID, "/", channel.ChannelId, ".tx")
-		config.Channels = append(config.Channels, channelMap)
+		chanMap := make(map[string]interface{})
+		orders := []string{}
+		for _,orderAdd := range defindeInfo.Orders{
+			orders = append(orders,fmt.Sprintf("%s.%s",orderAdd.OrderId,defindeInfo.Domain))
+		}
+		chanMap["orderers"] = orders
+
+		peerobj := make(map[string]interface{})
+		for _ , orgINfo := range  defindeInfo.Orgs{
+			for i,peerinfo := range orgINfo.Peers{
+				peerParam := make(map[string]interface{})
+				if i == 0 {
+					peerParam["endorsingPeer"] = true
+					peerParam["chaincodeQuery"] = true
+					peerParam["ledgerQuery"] = true
+					peerParam["eventSource"] = true
+				}else{
+					peerParam["endorsingPeer"] = false
+					peerParam["chaincodeQuery"] = true
+					peerParam["ledgerQuery"] = true
+					peerParam["eventSource"] = false
+				}
+				peerobj[peerinfo.ContainerId] = peerParam
+			}
+		}
+		chanMap["peers"] = peerobj
+		channelInfo[channel.ChannelId] = chanMap
 	}
 
-	networkconfig := make(map[string]interface{})
-	if defindeInfo.Consensus == "kafka" {
-		for _, order := range defindeInfo.Orders {
-			tmpOrder := make(map[string]string)
-			tmpOrder["url"] = fmt.Sprint("grpcs://", order.OrderIp, ":", strconv.Itoa(order.OrderPort))
-			tmpOrder["server-hostname"] = fmt.Sprint(order.OrderId, ".", defindeInfo.Domain)
-			tmpOrder["tls_cacerts"] = fmt.Sprint(constant.ROOTPATH, "/", defindeInfo.ID, "/crypto-config/ordererOrganizations/", defindeInfo.Domain, "/orderers/", order.OrderId, ".", defindeInfo.Domain, "/tls/ca.crt")
-			networkconfig[order.OrderId] = tmpOrder
-			// add orderer to orderer list
-			config.Orderers = append(config.Orderers, order.OrderId)
+	connectProfile["channels"] = channelInfo
+
+	////// config organizations
+
+	orgsINfo := make(map[string]interface{})
+
+	for _,orgTmp:=range defindeInfo.Orgs{
+		tmpOrgINfo := make(map[string]interface{})
+		tmpOrgINfo["mspid"] = orgTmp.OrgId
+
+		listPeer := []string{}
+		for _,tmpPeer := range orgTmp.Peers{
+			listPeer = append(listPeer,tmpPeer.ContainerId)
 		}
-	} else {
-		if len(defindeInfo.Orders) == 1 {
-			order := defindeInfo.Orders[0]
-			tmpOrder := make(map[string]string)
-			tmpOrder["url"] = fmt.Sprint("grpcs://", order.OrderIp, ":", strconv.Itoa(order.OrderPort))
-			tmpOrder["server-hostname"] = fmt.Sprint(order.OrderId, ".", defindeInfo.Domain)
-			tmpOrder["tls_cacerts"] = fmt.Sprint(constant.ROOTPATH, "/", defindeInfo.ID, "/crypto-config/ordererOrganizations/", defindeInfo.Domain, "/orderers/", order.OrderId, ".", defindeInfo.Domain, "/tls/ca.crt")
-			networkconfig[order.OrderId] = tmpOrder
-			// add orderer to orderer list
-			config.Orderers = append(config.Orderers, order.OrderId)
-		} else {
-			utils.ResponseJson(400, "order未配置", "", writer)
-			return
+		tmpOrgINfo["peers"] = listPeer
+
+		capeers := []string{}
+
+		capeers = append(capeers,orgTmp.ContainerId)
+		tmpOrgINfo["certificateAuthorities"] = capeers
+
+		tmpAdminKey := make(map[string]interface{})
+		tmpAdminKey["path"] =  fmt.Sprint(constant.ROOTPATH, "/", defindeInfo.ID, "/crypto-config/peerOrganizations/", orgTmp.OrgId, ".", defindeInfo.Domain, "/users/Admin@", orgTmp.OrgId, ".", defindeInfo.Domain, "/msp/keystore/")
+
+		tmpOrgINfo["adminPrivateKey"] = tmpAdminKey
+
+		tmpSignedCert := make(map[string]interface{})
+		tmpSignedCert["path"] = fmt.Sprint(constant.ROOTPATH, "/", defindeInfo.ID, "/crypto-config/peerOrganizations/", orgTmp.OrgId, ".", defindeInfo.Domain, "/users/Admin@", orgTmp.OrgId, ".", defindeInfo.Domain, "/msp/signcerts")
+		tmpOrgINfo["signedCert"] = tmpSignedCert
+
+		orgsINfo[orgTmp.OrgId] = tmpOrgINfo
+	}
+
+	connectProfile["organizations"] = orgsINfo
+
+	/////////////////////////////===================orderers
+	orderInfo := make(map[string]interface{})
+	for _,tmpOrder := range defindeInfo.Orders {
+		tmpOrderInfo := make(map[string]interface{})
+
+		tmpOrderInfo["url"] = fmt.Sprint("grpcs://", tmpOrder.OrderIp, ":", strconv.Itoa(tmpOrder.OrderPort))
+
+		option := make(map[string]string)
+		option["ssl-target-name-override"] = tmpOrder.ContainerId
+		tmpOrderInfo["grpcOptions"] = option
+
+		cacert := make(map[string]string)
+		cacert["path"] = fmt.Sprint(constant.ROOTPATH, "/", defindeInfo.ID, "/crypto-config/ordererOrganizations/", defindeInfo.Domain, "/orderers/", tmpOrder.OrderId, ".", defindeInfo.Domain, "/tls/ca.crt")
+		tmpOrderInfo["tlsCACerts"] = cacert
+
+		orderInfo[tmpOrder.ContainerId] = tmpOrderInfo
+	}
+
+	connectProfile["orderers"] = orderInfo
+
+
+	////////////////////////////=======================peers
+
+	peersInfo := make(map[string]interface{})
+
+	for _,tmporgInfo := range defindeInfo.Orgs {
+		for _,tmpPeerInfo := range tmporgInfo.Peers{
+			tmpPeerParam := make(map[string]interface{})
+			tmpPeerParam["url"] = fmt.Sprint("grpcs://", tmpPeerInfo.PeerIp, ":", strconv.Itoa(tmpPeerInfo.PostPort))
+			tmpPeerParam["eventUrl"] = fmt.Sprint("grpcs://", tmpPeerInfo.PeerIp, ":", strconv.Itoa(tmpPeerInfo.EventPort))
+
+			option := make(map[string]string)
+			option["ssl-target-name-override"] = tmpPeerInfo.ContainerId
+			tmpPeerParam["grpcOptions"] = option
+
+			cacert := make(map[string]string)
+			cacert["path"] = fmt.Sprint(constant.ROOTPATH, "/", defindeInfo.ID, "/crypto-config/peerOrganizations/", tmporgInfo.OrgId, ".", defindeInfo.Domain, "/peers/", tmpPeerInfo.PeerId, ".", tmporgInfo.OrgId, ".", defindeInfo.Domain, "/tls/ca.crt")
+
+			tmpPeerParam["tlsCACerts"] = cacert
+			peersInfo[tmpPeerInfo.ContainerId] = tmpPeerParam
 		}
 	}
+
+	connectProfile["peers"] = peersInfo
+
+
+	////////////////////////////==================certs
+
+	certInfo := make(map[string]interface{})
+
+	for _,tmpOrgINfo := range defindeInfo.Orgs{
+		caInfo := make(map[string]interface{})
+
+		caInfo["url"] = fmt.Sprint("https://", tmpOrgINfo.CaIp, ":", strconv.Itoa(tmpOrgINfo.CaPort))
+
+		option := make(map[string]bool)
+		option["verify"] = false
+		caInfo["httpOptions"] = option
+
+		cacert := make(map[string]string)
+		                      // artifacts/channel/crypto-config/peerOrganizations/org1.example.com/ca/ca.org1.example.com-cert.pem
+		cacert["path"] = fmt.Sprint(constant.ROOTPATH, "/", defindeInfo.ID, "/crypto-config/peerOrganizations/", tmpOrgINfo.OrgId, ".", defindeInfo.Domain, "/ca/ca.", tmpOrgINfo.OrgId, ".", defindeInfo.Domain, "-cert.pem")
+
+		caInfo["tlsCACerts"] = cacert
+
+		regster := make(map[string]string)
+
+		regster["enrollId"] = tmpOrgINfo.CaUser
+		regster["enrollSecret"] = tmpOrgINfo.CaPwd
+		//////////////////////////////====================list register array
+		listRegister := []map[string]string{}
+		listRegister = append(listRegister,regster)
+
+		caInfo["registrar"] = listRegister
+
+		caInfo["caName"] = tmpOrgINfo.ContainerId
+		fmt.Println("================================================")
+		fmt.Println(tmpOrgINfo.ContainerId)
+		fmt.Println(caInfo)
+		certInfo[tmpOrgINfo.ContainerId] = caInfo
+	}
+
+	connectProfile["certificateAuthorities"] = certInfo
+
+	config.Connect = connectProfile
+	////////////=============================network config
+	networkconfig := make(map[string]interface{})
 
 	for _, org := range defindeInfo.Orgs {
-		config.Orgs = append(config.Orgs, org.OrgId) // 记录组织
-		tmpOrg := make(map[string]interface{})
-		tmpOrg["aliasName"] = "org1"
-		tmpOrg["name"] = org.OrgId
-		tmpOrg["mspid"] = org.OrgId
-		tmpOrg["ca"] = fmt.Sprint("https://", org.CaIp, ":", strconv.Itoa(org.CaPort))
-		tmpAdmin := make(map[string]string)
-		// /var/certification/f18fafe1e2b4494696e1dac580ab6c53/crypto-config/peerOrganizations/nxia.jiake.com/users/Admin@nxia.jiake.com/msp/keystore
-		tmpAdmin["key"] = fmt.Sprint(constant.ROOTPATH, "/", defindeInfo.ID, "/crypto-config/peerOrganizations/", org.OrgId, ".", defindeInfo.Domain, "/users/Admin@", org.OrgId, ".", defindeInfo.Domain, "/msp/keystore")
-		tmpAdmin["cert"] = fmt.Sprint(constant.ROOTPATH, "/", defindeInfo.ID, "/crypto-config/peerOrganizations/", org.OrgId, ".", defindeInfo.Domain, "/users/Admin@", org.OrgId, ".", defindeInfo.Domain, "/msp/signcerts")
-		tmpOrg["admin"] = tmpAdmin
 
-		tmpPeerObj := make(map[string]interface{})
-		for _, peer := range org.Peers {
-			// "requests": "grpcs://localhost:7051",
-			// 		"events": "grpcs://localhost:7053",
-			// 		"server-hostname": "peer0.nxia.jiake.com",
-			// 		"tls_cacerts": peerOrganizations/nxia.jiake.com/peers/peer0.nxia.jiake.com/tls/ca.crt
-			tmpPeer := make(map[string]string)
-			tmpPeer["server-hostname"] = fmt.Sprint(peer.PeerId, ".", org.OrgId, ".", defindeInfo.Domain)
-			tmpPeer["requests"] = fmt.Sprint("grpcs://", peer.PeerIp, ":", strconv.Itoa(peer.PostPort))
-			tmpPeer["events"] = fmt.Sprint("grpcs://", peer.PeerIp, ":", strconv.Itoa(peer.EventPort))
-			tmpPeer["tls_cacerts"] = fmt.Sprint(constant.ROOTPATH, "/", defindeInfo.ID, "/crypto-config/peerOrganizations/", org.OrgId, ".", defindeInfo.Domain, "/peers/", peer.PeerId, ".", org.OrgId, ".", defindeInfo.Domain, "/tls/ca.crt")
-			tmpPeerObj[peer.PeerId] = tmpPeer
-		}
-		tmpOrg["peers"] = tmpPeerObj //peers 初始化
-		networkconfig[org.OrgId] = tmpOrg
+		tmpClient := make(map[string]interface{})
+
+		tmpClient["version"] = "1.0"
+
+		tmpOrg := make(map[string]interface{})
+		tmpStore := make(map[string]interface{})
+		tmpcryptoStore := make(map[string]string)
+
+		tmpcryptoStore["path"] = fmt.Sprintf("%s_%s","/var/fabric-client-kvs",org.OrgId)
+
+		tmpStore["path"] = fmt.Sprintf("%s_%s","/var/fabric-client-kvs",org.OrgId)
+		tmpStore["cryptoStore"] = tmpcryptoStore
+		tmpOrg["credentialStore"] = tmpStore
+		tmpOrg["organization"] = org.OrgId
+
+		tmpClient["client"] = tmpOrg
+		networkconfig[org.OrgId] = tmpClient
 	}
 	config.NetworkConfig = networkconfig
 
@@ -1876,8 +1999,8 @@ func deployHandle(writer http.ResponseWriter, request *http.Request) {
 		}
 	}
 	//////////////////////===================生成yaml文件结束=======================================
-	utils.ResponseJson(400, "文件已生成", "", writer)
-	return
+	//utils.ResponseJson(400, "文件已生成", "", writer)
+	//return
 	//////////////////////====================发送文件开始 ==========================================
 	relativePath := filepath.Join("./", defindeInfo.ID)
 
