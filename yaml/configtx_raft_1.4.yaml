@@ -148,14 +148,14 @@ Profiles:
                 Consenters:
 #######OrderList-Start
                     - Host: -OrderIDForReplace-.-DomainForReplace-
-                      Port: 7050
+                      Port: -OrderPortForReplace-
                       ClientTLSCert: -ProjectDIR-/crypto-config/ordererOrganizations/-DomainForReplace-/orderers/-OrderIDForReplace-.-DomainForReplace-/tls/server.crt
                       ServerTLSCert: -ProjectDIR-/crypto-config/ordererOrganizations/-DomainForReplace-/orderers/-OrderIDForReplace-.-DomainForReplace-/tls/server.crt
 #######OrderList-End
 
             Addresses:
 #######OrderList-Start
-                - -OrderIDForReplace-.-DomainForReplace-:7050
+                - -OrderIDForReplace-.-DomainForReplace-:-OrderPortForReplace-
 #######OrderList-End
 
             Organizations:

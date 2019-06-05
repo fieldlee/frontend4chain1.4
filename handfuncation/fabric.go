@@ -1623,12 +1623,15 @@ func channelgenHandle(writer http.ResponseWriter, request *http.Request) {
 		tmpOrgINfo["certificateAuthorities"] = capeers
 
 		tmpAdminKey := make(map[string]interface{})
-		tmpAdminKey["path"] =  fmt.Sprint(constant.ROOTPATH, "/", defindeInfo.ID, "/crypto-config/peerOrganizations/", orgTmp.OrgId, ".", defindeInfo.Domain, "/users/Admin@", orgTmp.OrgId, ".", defindeInfo.Domain, "/msp/keystore/")
+
+		keyName := utils.GetSkFileName(fmt.Sprint(constant.ROOTPATH, "/", defindeInfo.ID, "/crypto-config/peerOrganizations/", orgTmp.OrgId, ".", defindeInfo.Domain, "/users/Admin@", orgTmp.OrgId, ".", defindeInfo.Domain, "/msp/keystore/"))
+
+		tmpAdminKey["path"] =  fmt.Sprint(constant.ROOTPATH, "/", defindeInfo.ID, "/crypto-config/peerOrganizations/", orgTmp.OrgId, ".", defindeInfo.Domain, "/users/Admin@", orgTmp.OrgId, ".", defindeInfo.Domain, "/msp/keystore/",keyName)
 
 		tmpOrgINfo["adminPrivateKey"] = tmpAdminKey
 
 		tmpSignedCert := make(map[string]interface{})
-		tmpSignedCert["path"] = fmt.Sprint(constant.ROOTPATH, "/", defindeInfo.ID, "/crypto-config/peerOrganizations/", orgTmp.OrgId, ".", defindeInfo.Domain, "/users/Admin@", orgTmp.OrgId, ".", defindeInfo.Domain, "/msp/signcerts")
+		tmpSignedCert["path"] = fmt.Sprint(constant.ROOTPATH, "/", defindeInfo.ID, "/crypto-config/peerOrganizations/", orgTmp.OrgId, ".", defindeInfo.Domain, "/users/Admin@", orgTmp.OrgId, ".", defindeInfo.Domain, "/msp/signcerts/Admin@",orgTmp.OrgId, ".", defindeInfo.Domain,"-cert.pem")
 		tmpOrgINfo["signedCert"] = tmpSignedCert
 
 		orgsINfo[orgTmp.OrgId] = tmpOrgINfo
@@ -1696,7 +1699,7 @@ func channelgenHandle(writer http.ResponseWriter, request *http.Request) {
 		caInfo["httpOptions"] = option
 
 		cacert := make(map[string]string)
-		                      // artifacts/channel/crypto-config/peerOrganizations/org1.example.com/ca/ca.org1.example.com-cert.pem
+
 		cacert["path"] = fmt.Sprint(constant.ROOTPATH, "/", defindeInfo.ID, "/crypto-config/peerOrganizations/", tmpOrgINfo.OrgId, ".", defindeInfo.Domain, "/ca/ca.", tmpOrgINfo.OrgId, ".", defindeInfo.Domain, "-cert.pem")
 
 		caInfo["tlsCACerts"] = cacert
@@ -1712,9 +1715,6 @@ func channelgenHandle(writer http.ResponseWriter, request *http.Request) {
 		caInfo["registrar"] = listRegister
 
 		caInfo["caName"] = tmpOrgINfo.ContainerId
-		fmt.Println("================================================")
-		fmt.Println(tmpOrgINfo.ContainerId)
-		fmt.Println(caInfo)
 		certInfo[tmpOrgINfo.ContainerId] = caInfo
 	}
 
@@ -1919,7 +1919,14 @@ func deployHandle(writer http.ResponseWriter, request *http.Request) {
 	// configtxgenToolPath := filepath.Join(constant.ROOTPATH, "configtxgen")
 	// exportShellString, ";",
 	configtxgenShellString := fmt.Sprint(cdShellString, ";", exportShellString, "; ../configtxgen -profile ProjectOrgsOrdererGenesis -outputBlock ./genesis.block")
-	fmt.Println(configtxgenShellString)
+
+	if  defindeInfo.Consensus == "raft" {
+		configtxgenShellString = fmt.Sprint(cdShellString, ";", exportShellString, "; ../configtxgen -profile SampleMultiNodeEtcdRaft -outputBlock ./genesis.block")
+	}
+	if  defindeInfo.Consensus == "kafka" {
+		configtxgenShellString = fmt.Sprint(cdShellString, ";", exportShellString, "; ../configtxgen -profile SampleDevModeKafka -outputBlock ./genesis.block")
+	}
+	
 	err, outstring, outerr = utils.Shellout(configtxgenShellString)
 	fmt.Println(outstring)
 	fmt.Println(outerr)
@@ -2626,11 +2633,12 @@ func chaincodeHandler(writer http.ResponseWriter, request *http.Request) {
 	// 读取传送的数据
 	createChannel := ""
 
+
 	createChannel = fmt.Sprintln(createChannel, fmt.Sprintf(`curl -s -X POST \
 		  http://localhost:4000/channels \
 		  -H "authorization: Bearer $%s_TOKEN" \
 		  -H "content-type: application/json" \
-		  -d '{"channelName":"%s"}'`, defaultToken, ccParam.ChannelId))
+		  -d '{"channelName":"%s","channelConfigPath":"%s"}'`, defaultToken, ccParam.ChannelId,fmt.Sprintf("/var/certification/%s/%s.tx",defindeInfo.ID,ccParam.ChannelId)))
 
 	joinChannel := ""
 	for _, org := range defindeInfo.Orgs {
@@ -2640,9 +2648,9 @@ func chaincodeHandler(writer http.ResponseWriter, request *http.Request) {
 					peerStr := ""
 					for _, peer := range org.Peers {
 						if peerStr == "" {
-							peerStr = fmt.Sprint(peerStr, fmt.Sprintf(`"%s"`, peer.PeerId))
+							peerStr = fmt.Sprint(peerStr, fmt.Sprintf(`"%s"`, fmt.Sprintf("%s.%s.%s",peer.PeerId,org.OrgId,defindeInfo.Domain)))
 						} else {
-							peerStr = fmt.Sprint(peerStr, ",", fmt.Sprintf(`"%s"`, peer.PeerId))
+							peerStr = fmt.Sprint(peerStr, ",", fmt.Sprintf(`"%s"`, fmt.Sprintf("%s.%s.%s",peer.PeerId,org.OrgId,defindeInfo.Domain)))
 						}
 					}
 					joinChannel = fmt.Sprintln(joinChannel, fmt.Sprintf(`curl -s -X POST \
@@ -2663,9 +2671,9 @@ func chaincodeHandler(writer http.ResponseWriter, request *http.Request) {
 					peerStr := ""
 					for _, peer := range org.Peers {
 						if peerStr == "" {
-							peerStr = fmt.Sprint(peerStr, fmt.Sprintf(`"%s"`, peer.PeerId))
+							peerStr = fmt.Sprint(peerStr, fmt.Sprintf(`"%s"`, fmt.Sprintf("%s.%s.%s",peer.PeerId,org.OrgId,defindeInfo.Domain)))
 						} else {
-							peerStr = fmt.Sprint(peerStr, ",", fmt.Sprintf(`"%s"`, peer.PeerId))
+							peerStr = fmt.Sprint(peerStr, ",", fmt.Sprintf(`"%s"`, fmt.Sprintf("%s.%s.%s",peer.PeerId,org.OrgId,defindeInfo.Domain)))
 						}
 					}
 					installChaincode = fmt.Sprintln(installChaincode, fmt.Sprintf(`curl -s -X POST \

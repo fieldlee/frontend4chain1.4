@@ -17,6 +17,22 @@ import (
 	"strings"
 )
 
+func GetSkFileName(dir string)string{
+	newReplacedStr := ""
+	rd, err := ioutil.ReadDir(dir)
+	if err != nil {
+		fmt.Println("read dir error!")
+		return newReplacedStr
+	}
+	for _, file := range rd {
+		if strings.HasSuffix(file.Name(), "_sk") {
+			newReplacedStr = file.Name()
+			break
+		}
+	}
+	return newReplacedStr
+}
+
 func ReplaceCertWithValue(define module.Define, replaceString string) string {
 	// -OrderIDForReplace-
 	// -OrderPortForReplace-
