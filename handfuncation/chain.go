@@ -75,7 +75,7 @@ func createChannel(writer http.ResponseWriter, request *http.Request) {
 	createChannel = fmt.Sprint(createChannel, fmt.Sprintf(`TOKEN=$(curl -s -X POST \
 		http://localhost:4000/login \
 		-H "content-type: application/x-www-form-urlencoded" \
-		-d 'username=%s&password=password&orgName=%s&channelName=%s')
+		-d 'username=%s&password=password&orgname=%s&channelName=%s')
 	  echo $TOKEN
 	  TOKEN=$(echo $TOKEN | jq ".token" | sed "s/\"//g")`, defindeInfo.Orgs[0].OrgId, defindeInfo.Orgs[0].OrgId, chainParam.ChannelId))
 
@@ -143,7 +143,7 @@ func joinChannel(writer http.ResponseWriter, request *http.Request) {
 	for _, org := range defindeInfo.Orgs {
 		joinChannel = fmt.Sprintln(joinChannel, fmt.Sprintf(`%s_TOKEN=$(curl -s -X POST http://localhost:4000/login \ 
 			-H "content-type: application/x-www-form-urlencoded" \
-			-d 'username=%s&password=password&orgName=%s&channelName=%s')
+			-d 'username=%s&password=password&orgname=%s&channelName=%s')
 		  %s_TOKEN=$(echo $%s_TOKEN | jq ".token" | sed "s/\"//g")`, org.OrgId, org.OrgId, org.OrgId, org.OrgId, org.OrgId))
 
 		peerStr := ""
@@ -215,7 +215,7 @@ func installChaincode(writer http.ResponseWriter, request *http.Request) {
 	for _, org := range defindeInfo.Orgs {
 		installChaincode = fmt.Sprintln(installChaincode, fmt.Sprintf(`%s_TOKEN=$(curl -s -X POST http://localhost:4000/login \ 
 			-H "content-type: application/x-www-form-urlencoded" \
-			-d 'username=%s&password=password&orgName=%s')
+			-d 'username=%s&password=password&orgname=%s')
 		  %s_TOKEN=$(echo $%s_TOKEN | jq ".token" | sed "s/\"//g")`, org.OrgId, org.OrgId, org.OrgId, org.OrgId, org.OrgId))
 
 		peerStr := ""
@@ -293,7 +293,7 @@ func instaniateChaincode(writer http.ResponseWriter, request *http.Request) {
 	instantiateChainCode = fmt.Sprintln(instantiateChainCode, fmt.Sprintf(`TOKEN=$(curl -s -X POST \
 		http://localhost:4000/login \
 		-H "content-type: application/x-www-form-urlencoded" \
-		-d 'username=%s&password=password&orgName=%s')
+		-d 'username=%s&password=password&orgname=%s')
 	  echo $TOKEN
 	  TOKEN=$(echo $TOKEN | jq ".token" | sed "s/\"//g")`, defindeInfo.Orgs[0].OrgId, defindeInfo.Orgs[0].OrgId))
 
@@ -361,7 +361,7 @@ func upgradeChaincode(writer http.ResponseWriter, request *http.Request) {
 	upgradeChaincode = fmt.Sprintln(upgradeChaincode, fmt.Sprintf(`TOKEN=$(curl -s -X POST \
 		http://localhost:4000/login \
 		-H "content-type: application/x-www-form-urlencoded" \
-		-d 'username=%s&password=password&orgName=%s')
+		-d 'username=%s&password=password&orgname=%s')
 	  echo $TOKEN
 	  TOKEN=$(echo $TOKEN | jq ".token" | sed "s/\"//g")`, defindeInfo.Orgs[0].OrgId, defindeInfo.Orgs[0].OrgId))
 

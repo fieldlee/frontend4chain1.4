@@ -1079,7 +1079,7 @@ func addOrg(writer http.ResponseWriter, request *http.Request) {
 					if defaultToken == "" {
 						defaultToken = org.OrgId
 					}
-					loginShell = fmt.Sprintln(loginShell, fmt.Sprintf(`%s_TOKEN=$(curl -s -X POST http://localhost:4000/login -H "content-type: application/x-www-form-urlencoded" -d 'username=%s&password=password&orgName=%s')`, org.OrgId, org.OrgId, org.OrgId))
+					loginShell = fmt.Sprintln(loginShell, fmt.Sprintf(`%s_TOKEN=$(curl -s -X POST http://localhost:4000/login -H "content-type: application/x-www-form-urlencoded" -d 'username=%s&password=password&orgname=%s')`, org.OrgId, org.OrgId, org.OrgId))
 					// &channelName=%s  channel.ChannelId
 					loginShell = fmt.Sprintln(loginShell, fmt.Sprintf(`%s_TOKEN=$(echo $%s_TOKEN | jq ".token" | sed "s/\"//g")`, org.OrgId, org.OrgId))
 				}
@@ -2622,7 +2622,7 @@ func chaincodeHandler(writer http.ResponseWriter, request *http.Request) {
 					if defaultToken == "" {
 						defaultToken = org.OrgId
 					}
-					loginShell = fmt.Sprintln(loginShell, fmt.Sprintf(`%s_TOKEN=$(curl -s -X POST http://localhost:4000/login -H "content-type: application/x-www-form-urlencoded" -d 'username=%s&password=password&orgName=%s')`, org.OrgId, org.OrgId, org.OrgId))
+					loginShell = fmt.Sprintln(loginShell, fmt.Sprintf(`%s_TOKEN=$(curl -s -X POST http://localhost:4000/login -H "content-type: application/x-www-form-urlencoded" -d 'username=%s&password=password&orgname=%s')`, org.OrgId, org.OrgId, org.OrgId))
 					//&channelName=%s , channel.ChannelId
 					loginShell = fmt.Sprintln(loginShell, fmt.Sprintf(`%s_TOKEN=$(echo $%s_TOKEN | jq ".token" | sed "s/\"//g")`, org.OrgId, org.OrgId))
 				}
@@ -2929,7 +2929,7 @@ func uploadChaincode(writer http.ResponseWriter, request *http.Request) {
 					if defaultToken == "" {
 						defaultToken = org.OrgId
 					}
-					loginShell = fmt.Sprintln(loginShell, fmt.Sprintf(`%s_TOKEN=$(curl -s -X POST http://localhost:4000/login -H "content-type: application/x-www-form-urlencoded" -d 'username=%s&password=password&orgName=%s')`, org.OrgId, org.OrgId, org.OrgId))
+					loginShell = fmt.Sprintln(loginShell, fmt.Sprintf(`%s_TOKEN=$(curl -s -X POST http://localhost:4000/login -H "content-type: application/x-www-form-urlencoded" -d 'username=%s&password=password&orgname=%s')`, org.OrgId, org.OrgId, org.OrgId))
 					//&channelName=%s , channel.ChannelId
 					loginShell = fmt.Sprintln(loginShell, fmt.Sprintf(`%s_TOKEN=$(echo $%s_TOKEN | jq ".token" | sed "s/\"//g")`, org.OrgId, org.OrgId))
 				}
