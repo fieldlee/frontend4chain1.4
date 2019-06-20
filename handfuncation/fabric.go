@@ -2012,7 +2012,7 @@ func deployHandle(writer http.ResponseWriter, request *http.Request) {
 	relativePath := filepath.Join("./", defindeInfo.ID)
 
 	// copy restart.sh 文件到项目文件夹下面
-	cpShell := fmt.Sprint("cd ", constant.ROOTPATH, ";cp ./", constant.SHELLRESTART, " ", relativePath, "/", constant.SHELLRESTART, ";")
+	cpShell := fmt.Sprint("cd ", constant.ROOTPATHMASTER, ";cp ./", constant.SHELLRESTART, " ", relativePath, "/", constant.SHELLRESTART, ";")
 	err, _, outerr = utils.Shellout(cpShell)
 	if err != nil {
 		utils.ResponseJson(400, "拷贝restart.sh文件到项目目录中："+err.Error(), "", writer)
@@ -2020,11 +2020,11 @@ func deployHandle(writer http.ResponseWriter, request *http.Request) {
 	}
 
 	// 压缩文件tar包
-	gizPath := filepath.Join(constant.ROOTPATH, defindeInfo.ID+".tar")
+	gizPath := filepath.Join(constant.ROOTPATHMASTER, defindeInfo.ID+".tar")
 	if _, err := os.Stat(gizPath); os.IsNotExist(err) {
 		os.Remove(gizPath)
 	}
-	gizShell := fmt.Sprint("cd ", constant.ROOTPATH, ";tar -cvf ", gizPath, " ", relativePath)
+	gizShell := fmt.Sprint("cd ", constant.ROOTPATHMASTER, ";tar -cvf ", gizPath, " ", relativePath)
 	// log.Println(gizShell)
 	err, _, outerr = utils.Shellout(gizShell)
 	if err != nil {

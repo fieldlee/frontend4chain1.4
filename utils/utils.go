@@ -240,7 +240,7 @@ func CheckAndCreatePath(path string) error {
 
 // 清空证书路径下的证书文件
 func ClearCertficationPath(id string) error {
-	newpath := filepath.Join(constant.ROOTPATH, id)
+	newpath := filepath.Join(constant.ROOTPATHMASTER, id)
 	if _, err := os.Stat(newpath); os.IsNotExist(err) {
 		return nil
 	}
@@ -250,7 +250,7 @@ func ClearCertficationPath(id string) error {
 
 // 生成路径
 func CreateCertficationPath(id string) (string, error) {
-	newpath := filepath.Join(constant.ROOTPATH, id)
+	newpath := filepath.Join(constant.ROOTPATHMASTER, id)
 	if _, err := os.Stat(newpath); os.IsNotExist(err) {
 		err = os.MkdirAll(newpath, os.ModePerm)
 		if err != nil {
