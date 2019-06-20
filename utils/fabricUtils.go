@@ -198,6 +198,7 @@ func YamltoYaml(define module.Define, templatePath string, outPath string) error
 		}
 	}
 
+	fmt.Println("==============yamltoyaml=============")
 	return nil
 }
 
