@@ -25,7 +25,7 @@ const (
 	USERTABLE = "USER"
 
 	// 证书根目录
-	ROOTPATHMASTER   = "/root/certification"
+	ROOTPATHMASTER   = "/root/certificationMaster"
 	ROOTPATH   = "/var/certification"
 	CONFIGPATH = "/var/config"
 	YAMLPATH   = "/var/yaml"
