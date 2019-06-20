@@ -251,12 +251,14 @@ func ClearCertficationPath(id string) error {
 // 生成路径
 func CreateCertficationPath(id string) (string, error) {
 	newpath := filepath.Join(constant.ROOTPATHMASTER, id)
+	fmt.Println(newpath)
 	if _, err := os.Stat(newpath); os.IsNotExist(err) {
 		err = os.MkdirAll(newpath, os.ModePerm)
 		if err != nil {
 			return "", err
 		}
 	}
+	fmt.Println("========================fmt.Println(newpath):")
 	return newpath, nil
 }
 
