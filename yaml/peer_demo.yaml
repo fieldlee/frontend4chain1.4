@@ -49,6 +49,7 @@ services:
     extra_hosts:
       - "-OrderIDForReplace-.-DomainForReplace-:-OrderIPForReplace-"
 #########OrderExtra_End
+      - "-CouchContainerIdForReplace-:127.0.0.1"
 #########DependOn_Start
     depends_on:
       - -CouchContainerIdForReplace-
