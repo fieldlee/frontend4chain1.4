@@ -2,7 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="345655b0-2070-4739-82bd-b3a5199ceb19" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/utils/fabricUtils.go" beforeDir="false" afterPath="$PROJECT_DIR$/utils/fabricUtils.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/yaml/ca_demo.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/yaml/ca_demo.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/yaml/couch_demo.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/yaml/couch_demo.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/yaml/order_demo.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/yaml/order_demo.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/yaml/peer_demo.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/yaml/peer_demo.yaml" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -15,26 +18,26 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/yaml/peer_demo.yaml">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="256">
-              <caret line="52" lean-forward="true" selection-start-line="52" selection-end-line="52" />
+            <state relative-caret-position="160">
+              <caret line="17" column="27" selection-start-line="17" selection-start-column="27" selection-end-line="17" selection-end-column="27" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Readme">
+        <entry file="file://$PROJECT_DIR$/yaml/couch_demo.yaml">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="340">
-              <caret line="17" column="21" selection-start-line="17" selection-start-column="21" selection-end-line="17" selection-end-column="21" />
+            <state relative-caret-position="240">
+              <caret line="12" column="25" selection-start-line="12" selection-start-column="25" selection-end-line="12" selection-end-column="25" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/config/config.go">
+        <entry file="file://$PROJECT_DIR$/yaml/order_demo.yaml">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="600">
-              <caret line="36" column="43" selection-start-line="36" selection-start-column="39" selection-end-line="36" selection-end-column="49" />
+            <state relative-caret-position="93">
+              <caret line="12" column="25" selection-start-line="12" selection-start-column="25" selection-end-line="12" selection-end-column="25" />
             </state>
           </provider>
         </entry>
@@ -62,7 +65,7 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/utils/fabricUtils.go">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="352">
@@ -70,6 +73,15 @@
               <folding>
                 <element signature="e#15#219#0" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/yaml/ca_demo.yaml">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="181">
+              <caret line="11" column="25" selection-start-line="11" selection-start-column="25" selection-end-line="11" selection-end-column="25" />
             </state>
           </provider>
         </entry>
@@ -148,16 +160,17 @@
         <option value="$PROJECT_DIR$/db/db.go" />
         <option value="$PROJECT_DIR$/config/config.go" />
         <option value="$PROJECT_DIR$/module/info.go" />
-        <option value="$PROJECT_DIR$/yaml/ca_demo.yaml" />
         <option value="$PROJECT_DIR$/yaml/configtx_raft.yaml" />
-        <option value="$PROJECT_DIR$/yaml/order_demo.yaml" />
         <option value="$PROJECT_DIR$/handfuncation/chain.go" />
         <option value="$PROJECT_DIR$/config/online.json" />
         <option value="$PROJECT_DIR$/handfuncation/fabric.go" />
         <option value="$PROJECT_DIR$/utils/utils.go" />
-        <option value="$PROJECT_DIR$/yaml/peer_demo.yaml" />
         <option value="$PROJECT_DIR$/constant/constant.go" />
         <option value="$PROJECT_DIR$/utils/fabricUtils.go" />
+        <option value="$PROJECT_DIR$/yaml/peer_demo.yaml" />
+        <option value="$PROJECT_DIR$/yaml/couch_demo.yaml" />
+        <option value="$PROJECT_DIR$/yaml/order_demo.yaml" />
+        <option value="$PROJECT_DIR$/yaml/ca_demo.yaml" />
       </list>
     </option>
   </component>
@@ -403,20 +416,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/yaml/ca_demo.yaml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="540">
-          <caret line="27" column="6" selection-start-line="27" selection-start-column="6" selection-end-line="27" selection-end-column="6" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/yaml/order_demo.yaml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="213">
-          <caret line="18" column="40" selection-start-line="18" selection-start-column="40" selection-end-line="18" selection-end-column="40" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/yaml/configtx_raft.yaml">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="3060">
@@ -482,13 +481,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/yaml/peer_demo.yaml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="256">
-          <caret line="52" lean-forward="true" selection-start-line="52" selection-end-line="52" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/handfuncation/fabric.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="202">
@@ -508,6 +500,34 @@
           <folding>
             <element signature="e#15#219#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/yaml/peer_demo.yaml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="160">
+          <caret line="17" column="27" selection-start-line="17" selection-start-column="27" selection-end-line="17" selection-end-column="27" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/yaml/couch_demo.yaml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="240">
+          <caret line="12" column="25" selection-start-line="12" selection-start-column="25" selection-end-line="12" selection-end-column="25" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/yaml/order_demo.yaml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="93">
+          <caret line="12" column="25" selection-start-line="12" selection-start-column="25" selection-end-line="12" selection-end-column="25" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/yaml/ca_demo.yaml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="181">
+          <caret line="11" column="25" selection-start-line="11" selection-start-column="25" selection-end-line="11" selection-end-column="25" />
         </state>
       </provider>
     </entry>

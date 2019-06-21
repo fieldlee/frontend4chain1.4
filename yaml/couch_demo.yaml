@@ -10,6 +10,7 @@ services:
     image: hyperledger/fabric-couchdb
     privileged: true
     environment:
+      - GODEBUG=netdns=go
       - COUCHDB_USER=-CouchUserForReplace-
       - COUCHDB_PASSWORD=-CouchPasswordForReplace-
     ports:
