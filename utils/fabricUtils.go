@@ -561,9 +561,9 @@ func PeerReplaceCertWithValue(define module.Define, org module.Org, peer module.
 				extraReplaceStr = fmt.Sprintln(extraReplaceStr, "      - "+order.ContainerId+":"+order.OrderIp)
 			}
 		}
-		if peer.JoinCouch == true {
-			extraReplaceStr = fmt.Sprintln(extraReplaceStr, "      - "+peer.CouchContainerId+":127.0.0.1")
-		}
+		//if peer.JoinCouch == true {
+		//	extraReplaceStr = fmt.Sprintln(extraReplaceStr, "      - "+peer.CouchContainerId+":127.0.0.1")
+		//}
 
 		return extraReplaceStr
 	}
